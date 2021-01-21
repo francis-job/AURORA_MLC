@@ -404,19 +404,23 @@ BaseType_t send_cmd_pg()
  * and stores it to the status_data array and
  * returns the same array.
  *
- * @param 	none
+ * @param 	pointer to get the current status
  * @return 	status_data array
  *
  * @note
  *
  * Revision History:
  * 	- 190121 DA: 	Creation Date
+ * 	- 200121 DA:   Modified delay time
  */
-uint8_t *receive_status_pg()
+BaseType_t receive_status_pg(uint8_t* current_status)
 {
-	static uint8_t status_data[5];
-	xQueueReceive(status_queue,&status_data,portMAX_DELAY);
-	return status_data;
+	BaseType_t xstatus;
+	xstatus=xQueueReceive(status_queue,current_status,BLOCKING_TIME_STATUS_Q);
+	if(xstatus==pdPASS){
+		return SUCCESS;
+	}
+	return FAIL;
 }
 /**
  * @brief reverse the direction
