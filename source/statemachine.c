@@ -204,7 +204,7 @@ int systemconfig_func()
 		for(i=0;i<3;)
 		{
 			data=get_keyinput();
-
+			data = toupper(data);
 			if (data == 'Q') {
 				return HOMESCREEN;
 			}
@@ -268,6 +268,7 @@ int color_config_func()
 	for(i=0;i<6;)
 	{
 		data=get_keyinput();
+		data = toupper(data);
 		if(data=='Q'){
 			return HOMESCREEN;
 		}else if(data=='B'){
@@ -287,6 +288,7 @@ int color_config_func()
 	for(i=0;i<6;)
 	{
 		data=get_keyinput();
+		data = toupper(data);
 		if(data=='Q'){
 			return HOMESCREEN;
 		}else if(data=='B'){
@@ -294,6 +296,7 @@ int color_config_func()
 		}else if(validate_byte(END_COLOR_ID,i,data)==kStatus_Fail){
 			print_message(ERROR_MSG);
 			i=0;
+			print_message(get2);
 		}else{
 			*(buff1+i)=data;
 			i++;
@@ -305,11 +308,12 @@ int color_config_func()
 			i=0;
 		}
 	}
-	char get3[] = "\n\rEnter the step size\t\t:\t ";
+	char get3[] = "\n\rEnter the step size\t\t->\t ";
 	print_message(get3);
 	for(i=0;i<2;)
 	{
 		data=get_keyinput();
+		data = toupper(data);
 		if(data=='Q'){
 			return HOMESCREEN;
 		}else if(data=='B'){
@@ -369,6 +373,7 @@ int mode_config()
 	for(i=0;i<2;)
 	{
 		data=get_keyinput();
+		data = toupper(data);
 		if (data == 'Q'){
 			return HOMESCREEN;
 		}else if (data == 'B') {
@@ -394,6 +399,7 @@ int mode_config()
 			for(i=0;i<4;)
 			{
 				data=get_keyinput();
+				data = toupper(data);
 				if (data == 'Q') {
 					return HOMESCREEN;
 				}else if (data == 'B') {
@@ -418,7 +424,7 @@ int mode_config()
 			for(i=0;i<4;)
 			{
 				data=get_keyinput();
-
+				data = toupper(data);
 				if (data == 'Q') {
 					return HOMESCREEN;
 				} else if (data == 'B') {
@@ -478,6 +484,7 @@ int direction_config()
 	for(i=0;i<2;)
 	{
 		data=get_keyinput();
+		data = toupper(data);
 		if (data == 'Q'){
 			return HOMESCREEN;
 		} else if (data == 'B') {
@@ -537,6 +544,7 @@ int homescreen_func(){
 		print_message(PROMPT_HS);
 
 		data = get_keyinput();
+		data = toupper(data);
 		update_cmd_struct(data);
 
 		switch (data){
@@ -577,9 +585,14 @@ int homescreen_func(){
 
 			while(1)
 			{
+				print_message("\x1b[2J");
+				print_data((uint8_t *)MAIN_HEADING,sizeof(MAIN_HEADING));
+				print_message(DEV_STATUS);
+				print_data(device_status,strlen((const char*)device_status));
+				print_message(COMP_STATUS);
+				print_message("Connected                     ");
 				display_config();
 				response = i2c_recieve_data(&curr_config,&cmd_ascii);
-
 
 
 				if ( response == RECIEVECONFIG_SUCCESS) {
@@ -686,7 +699,7 @@ int execution_func()
 
 		if (is_master == 1) {
 			data = get_keyinput_nonblocking();
-
+			data = toupper(data);
 			if (validate_executionkey(data) == kStatus_Fail) {
 				continue;
 			} else {
@@ -730,7 +743,7 @@ int patternconfig_func(){
 	print_data((uint8_t*)PROMPT_PS,sizeof(PROMPT_PS));
 
 	uint8_t data = get_keyinput();
-
+	data = toupper(data);
 	switch (data) {
 
 	case 'Q' :
