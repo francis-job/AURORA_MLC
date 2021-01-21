@@ -270,7 +270,8 @@ int color_config_func()
 		data=get_keyinput();
 		data = toupper(data);
 		if(data=='Q'){
-			return HOMESCREEN;
+			state = HOMESCREEN;
+			return state;
 		}else if(data=='B'){
 			return PATTERNCONFIG_SCREEN;
 		}else if(validate_byte(START_COLOR_ID,i,data)==kStatus_Fail){
@@ -290,7 +291,8 @@ int color_config_func()
 		data=get_keyinput();
 		data = toupper(data);
 		if(data=='Q'){
-			return HOMESCREEN;
+			state = HOMESCREEN;
+			return state;
 		}else if(data=='B'){
 			return PATTERNCONFIG_SCREEN;
 		}else if(validate_byte(END_COLOR_ID,i,data)==kStatus_Fail){
@@ -315,7 +317,8 @@ int color_config_func()
 		data=get_keyinput();
 		data = toupper(data);
 		if(data=='Q'){
-			return HOMESCREEN;
+			state = HOMESCREEN;
+			return state;
 		}else if(data=='B'){
 			return PATTERNCONFIG_SCREEN;
 		}else if(validate_byte(STEP_SIZE_ID,i,data)==kStatus_Fail){
@@ -375,7 +378,8 @@ int mode_config()
 		data=get_keyinput();
 		data = toupper(data);
 		if (data == 'Q'){
-			return HOMESCREEN;
+			state = HOMESCREEN;
+			return state;
 		}else if (data == 'B') {
 			return PATTERNCONFIG_SCREEN;
 		} else {
@@ -401,7 +405,8 @@ int mode_config()
 				data=get_keyinput();
 				data = toupper(data);
 				if (data == 'Q') {
-					return HOMESCREEN;
+					state = HOMESCREEN;
+					return state;
 				}else if (data == 'B') {
 					return PATTERNCONFIG_SCREEN;
 				}
@@ -426,7 +431,8 @@ int mode_config()
 				data=get_keyinput();
 				data = toupper(data);
 				if (data == 'Q') {
-					return HOMESCREEN;
+					state = HOMESCREEN;
+					return state;
 				} else if (data == 'B') {
 					return PATTERNCONFIG_SCREEN;
 				}
@@ -486,7 +492,8 @@ int direction_config()
 		data=get_keyinput();
 		data = toupper(data);
 		if (data == 'Q'){
-			return HOMESCREEN;
+			state = HOMESCREEN;
+			return state;
 		} else if (data == 'B') {
 			return PATTERNCONFIG_SCREEN;
 		} else {
