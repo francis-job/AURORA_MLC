@@ -9,7 +9,7 @@
 * Revision History:
 * - 150121 FTJ : Creation Date
 */
-#include "aurora_i2c.h"
+#include "AURORA_I2C.h"
 
 
 /*******************************************
@@ -66,6 +66,18 @@ status_t init_i2c_tranfer();
 status_t i2c_send_data(config_ascii_t *configuration,command_ascii_t *command);
 status_t i2c_recieve_data(config_ascii_t *configuration,command_ascii_t *command);
 
+/***********************************
+* CODE
+***********************************/
+/*!
+ * @brief This is a callback function for the I2C_SlaveTransferNonBlocking() function in the i2c_send_data() for transferring
+ * the command
+ *
+ * this Function is executed only on the successful completion of the I2C_SlaveTransferNonBlocking().
+ *
+ *param NONE
+ *retval NONE
+ */
 
 static void i2c_slave_callback(I2C_Type *base, i2c_slave_transfer_t *xfer, void *userData)
 {
@@ -94,7 +106,15 @@ static void i2c_slave_callback(I2C_Type *base, i2c_slave_transfer_t *xfer, void 
             break;
     }
 }
-
+/*!
+ * @brief This is a callback function for theI2C_MasterTransferEDMA() function in the i2c_send_data() for transferring
+ * the command
+ *
+ * this Function is executed only on the successful completion of the I2C_MasterTransferEDMA().
+ *
+ *param NONE
+ *retval NONE
+ */
 static void i2c_master_callback1(I2C_Type *base, i2c_master_edma_handle_t *handle, status_t status, void *userData)
 {
     /* Signal transfer success when received success status. */
@@ -102,6 +122,15 @@ static void i2c_master_callback1(I2C_Type *base, i2c_master_edma_handle_t *handl
         g_MasterCompletionFlag = true;
     }
 }
+/*!
+ * @brief This is a callback function for the I2C_MasterTransferNonBlocking() function in the i2c_send_data() for transferring
+ * the command
+ *
+ * this Function is executed only on the successful completion of the I2C_MasterTransferNonBlocking().
+ *
+ *param NONE
+ *retval NONE
+ */
 static void i2c_master_callback2(I2C_Type *base, i2c_master_handle_t *handle, status_t status, void *userData)
 {
     /* Signal transfer success when received success status. */
@@ -134,8 +163,7 @@ status_t init_i2c_tranfer()
 	  gpio_pin_config_t jumper_config = {
 	  		    		kGPIO_DigitalInput,
 	  					0,
-	  		    	    };
-
+	  		    	    };  	
       /*JUMPER INITIALIZATION AND STATE CHECK*/
       GPIO_PinInit(SYSTEM_JUMPER_PORT,SYSTEM_JUMPER_PIN,&jumper_config);
       uint16_t state = GPIO_PinRead(SYSTEM_JUMPER_PORT,SYSTEM_JUMPER_PIN);
@@ -239,6 +267,7 @@ status_t i2c_send_data(config_ascii_t *configuration,command_ascii_t *command)
               result = SENDCOMMAND_FAIL;
 	    	    }
 	      }
+	g_MasterCompletionFlag = false;
 	return result;
 }
 /*!
@@ -268,18 +297,18 @@ status_t i2c_recieve_data(config_ascii_t *configuration,command_ascii_t *command
 	      id = rx_Buff[1];
        if(id == CONFIG_DATA_ID){
 	      memcpy(configuration,&rx_Buff[1],CONFIG_LENGTH -1);
-	      g_SlaveCompletionFlag = false;
 	      memset(&rx_Buff, 0, sizeof(rx_Buff));
 
 	      result = RECIEVECONFIG_SUCCESS;
 
         }else if(id == COMMAND_DATA_ID){
     	   memcpy(command,&rx_Buff[1],COMMAND_LENGTH -1);
-    	   g_SlaveCompletionFlag = false;
     	   memset(&rx_Buff, 0, sizeof(rx_Buff));
     	  result = RECIEVECOMMAND_SUCCESS;
          }
 
 	  }
+	g_SlaveCompletionFlag = false;
 	return result;
 }
+
