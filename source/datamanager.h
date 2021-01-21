@@ -11,12 +11,15 @@
 /*******************************************
  * Const and Macro Defines
  *******************************************/
-//none
+#define BLOCKING_TIME_STATUS_Q 50U
 
 /***********************************
  * Typedefs and Enum Declarations
  ***********************************/
-
+enum status{
+	SUCCESS,
+	FAIL
+};
 /***********************************
  * Const Declarations
  ***********************************/
@@ -117,7 +120,7 @@ BaseType_t send_cmd_pg();
  * and stores it to the  array and returns
  * the same array.
  *
- * @param 	none
+ * @param 	pointer to current status
  * @return 	array
  *
  * @note
@@ -125,7 +128,7 @@ BaseType_t send_cmd_pg();
  * Revision History:
  * 	- 190121 DA: 	Creation Date
  */
-uint8_t *receive_status_pg();
+BaseType_t receive_status_pg(uint8_t*);
 /**
  * @brief reverse the direction
  *
