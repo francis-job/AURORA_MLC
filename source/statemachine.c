@@ -195,7 +195,7 @@ int systemconfig_func()
 	uint8_t data,i;
 	uint8_t buff[MAX_SIZE_REFRESH];
 	memset(&buff[0],'\0', sizeof(buff));
-	char get1[] = "\r\nEnter refresh rate";
+	char get1[] = "\r\nEnter refresh rate\t->\t";
 
 
 	while(1) {
