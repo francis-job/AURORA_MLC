@@ -1,8 +1,8 @@
 /**
-* @file_aurora_i2c.h
-* @brief Aurora i2c header 
+* @file_Aurora_mk1.h
+* @brief Aurora i2c header mk1
 *
-* Header file for Aurora i2c 
+* Header file for Aurora i2c mk1
 *
 * @note
 *
@@ -14,7 +14,6 @@
 
 #include <stdio.h>
 #include "board.h"
-#include "peripherals.h"
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "MK64F12.h"
@@ -25,7 +24,6 @@
 #include "fsl_dmamux.h"
 
 #include "fsl_common.h"
-#include "pin_mux.h"
 #include "fsl_gpio.h"
 #include "fsl_port.h"
 #include "statemachine.h"
@@ -52,8 +50,8 @@
 #define MASTER 1
 #define SLAVE 0
 /*DATA ID to differentiate between Configuration and Command*/
-#define CONFIG_DATA_ID '0'
-#define COMMAND_DATA_ID '1'
+#define CONFIG_DATA_ID '1'
+#define COMMAND_DATA_ID '0'
 /***********************************
 * Typedefs and Enum Declarations
 ***********************************/
