@@ -1,8 +1,8 @@
 /**
-* @file_Aurora_mk1.h
-* @brief Aurora i2c header mk1
+* @file_aurora_i2c.h
+* @brief Aurora i2c header 
 *
-* Header file for Aurora i2c mk1
+* Header file for Aurora i2c 
 *
 * @note
 *
