@@ -659,7 +659,7 @@ int execution_func()
 		print_message(DEV_STATUS);
 		print_data(device_status,strlen((const char*)device_status));
 		print_message(COMP_STATUS);
-
+		print_message("Connected");
 		if (i2c_recieve_data(NULL,&cmd_ascii) == RECIEVECOMMAND_SUCCESS ) {
 
 
