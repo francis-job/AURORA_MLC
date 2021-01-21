@@ -684,23 +684,24 @@ int execution_func()
 	}
 	while(1){
 
-		receive_status_from_task(current_status);
+		if(receive_status_pg(current_status)==SUCCESS){
 
-		print_message(COLOUR_STATUS);
-		for(int i=0;;i++) {
-			memcpy(&value,&current_status[i],1);
-			print_data(value,1);
-			if(i==2)
-				break;
-			print_message(",");
-		}
-		cycles_hex=atoi((char *)curr_config.cycles);
-
-		if (curr_config.mode == '2' &&  cycles_hex != 0) {
-			print_message(CYCLE_STATUS);
-			for(int i=3;i<5;i++){
+			print_message(COLOUR_STATUS);
+			for(int i=0;;i++) {
 				memcpy(&value,&current_status[i],1);
 				print_data(value,1);
+				if(i==2)
+					break;
+				print_message(",");
+			}
+			cycles_hex=atoi((char *)curr_config.cycles);
+
+			if (curr_config.mode == '2' &&  cycles_hex != 0) {
+				print_message(CYCLE_STATUS);
+				for(int i=3;i<5;i++){
+					memcpy(&value,&current_status[i],1);
+					print_data(value,1);
+				}
 			}
 		}
 
