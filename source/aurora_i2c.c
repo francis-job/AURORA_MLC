@@ -1,5 +1,5 @@
 /**
-* @file Aurora_i2c.c
+* @file aurora_i2c.c
 * @brief functional driver of i2cTransfer in Aurora MLC Application.
 *
 *
@@ -9,7 +9,7 @@
 * Revision History:
 * - 150121 FTJ : Creation Date
 */
-#include "AURORA_I2C.h"
+#include "aurora_i2c.h"
 
 
 /*******************************************
