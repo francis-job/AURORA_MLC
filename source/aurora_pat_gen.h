@@ -15,7 +15,7 @@
  *******************************************/
 #define start_pit_timer(PIT, kPIT_Chnl_0)  PIT_StartTimer((PIT), (kPIT_Chnl_0));
 #define DEFAULT_VALUE 1u
-#define MODE_INDICATOR 75u //If this is sent via status queue it shows that the pattern generation is in continuous mode
+#define MODE_INDICATOR '_' //If this is sent via status queue it shows that the pattern generation is in continuous mode
 #define DEFAULT_COMMAND '5'
 /***********************************
  * Typedefs and Enum Declarations
