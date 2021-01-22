@@ -15,9 +15,9 @@
 #include "clock_config.h"
 #include "fsl_debug_console.h"
 #include "aurora_pg_data_manager.h"
-#include <consolemanager.h>
+#include "consolemanager.h"
 #include "datamanager.h"
-
+#include "ctype.h"
 #include "aurora_i2c.h"
 #include "aurora_pat_gen.h"
 /*******************************************
