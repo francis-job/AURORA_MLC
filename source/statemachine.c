@@ -44,7 +44,7 @@ extern command_ascii_t cmd_ascii;
 /***********************************
  * Private Variables
  ***********************************/
-uint8_t companion_status =SLAVE_NOT_CONNECTED;
+volatile uint8_t companion_status =SLAVE_NOT_CONNECTED;
 
 /***********************************
  * Private Prototypes
@@ -721,7 +721,8 @@ int execution_func()
 			}
 		} else {
 
-			i2c_recieve_data(NULL,&cmd_ascii);
+			if (i2c_recieve_data(NULL,&cmd_ascii) != RECIEVECOMMAND_SUCCESS)
+			continue;
 		}
 
 		send_command_to_task(&cmd_ascii);
