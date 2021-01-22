@@ -91,23 +91,27 @@ void config_task(void *pvParameters)
 		switch (state)
 		{
 		case HOMESCREEN:
-			state = homescreen_func();
 			print_message("\x1b[2J");
+			state = homescreen_func();
+
 			break;
 
 		case SYSTEMCONFIG_SCREEN:
-			state = systemconfig_func();
 			print_message("\x1b[2J");
+			state = systemconfig_func();
+
 			break;
 
 		case PATTERNCONFIG_SCREEN:
-			state = patternconfig_func();
 			print_message("\x1b[2J");
+			state = patternconfig_func();
+
 			break;
 
 		case EXECUTION_SCREEN:
-			state = execution_func();
 			print_message("\x1b[2J");
+			state = execution_func();
+
 			break;
 
 		default:
