@@ -417,6 +417,7 @@ void auto_pattern(config_hex_t* xconfig_hex, command_ascii_t* xcommand_ascii)
 
 void up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_ascii)
 {
+	/*initialisations*/
 	status_ascii_t xstatus_ascii;
 	status_hex_t xstatus_hex;
 	int8_t current_color[3] = {0,0,0};
@@ -431,16 +432,14 @@ void up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_ascii)
 		xstatus_hex.cycles_left = xconfig_hex->cycles;
 	}
 
-	/*copies the start color tocurrent color*/
+	/*copies the start color to current color*/
 	memcpy(current_color,xconfig_hex->start_color,sizeof(current_color));
 
 
 	while(num_cycles_temp !=0)
 	{
 
-		//		if(xcommand_ascii->command == 'Q'){
-		//			break;
-		//		}
+
 		while(!change_rate_delay(xconfig_hex,xcommand_ascii)){
 
 
@@ -469,11 +468,12 @@ void up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_ascii)
 
 		}
 
-		update_current_color_up(xconfig_hex,current_color);
 		/*Send color status*/
 		memcpy(xstatus_hex.current_color,current_color,sizeof(current_color));
 		xstatus_ascii =hex_to_ascii_converter(&xstatus_hex);
 		send_status_to_task(&xstatus_ascii);
+
+		update_current_color_up(xconfig_hex,current_color);
 
 		if(xcommand_ascii->command == 'Q'){
 			pattern_log_off();
@@ -519,63 +519,72 @@ void up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_ascii)
 
 void down_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_ascii)
 {
+	/*initialisations*/
 	status_ascii_t xstatus_ascii;
 	status_hex_t xstatus_hex;
-
 	int8_t current_color[3] = {0,0,0};
 	uint8_t compare = DEFAULT_VALUE;
 	uint8_t num_cycles_temp = DEFAULT_VALUE;
-
 	xstatus_hex.cycles_left = MODE_INDICATOR;
 
+	/*only change the num_cycles_temp for automatic fixed.*/
+
 	if(xconfig_hex->cycles){
-		num_cycles_temp = xconfig_hex->cycles; // only change the num_cycles_temp for automatic fixed.
+		num_cycles_temp = xconfig_hex->cycles;
 		xstatus_hex.cycles_left = xconfig_hex->cycles;
 	}
 
+	/*copies the END color to current color*/
 	memcpy(current_color,xconfig_hex->end_color,sizeof(current_color));
 
 
-	while(num_cycles_temp !=0){
-		if(xcommand_ascii->command == 'Q'){
-			break;
-		}
-		update_current_color_down(xconfig_hex,current_color);
+	while(num_cycles_temp !=0)
+	{
+
+
 		while(!change_rate_delay(xconfig_hex,xcommand_ascii)){
+
+
 			receive_command_from_task(xcommand_ascii);
 
-			pattern_generator(current_color,xconfig_hex);
+			/*Waits for notification from pit isr*/
 			ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
+			pattern_generator(current_color,xconfig_hex);
 
-			memcpy(xstatus_hex.current_color,current_color,sizeof(current_color));
-
+			/*compares the start color and current color to determine whether end of cycle is occured*/
 			compare = memcmp(xconfig_hex->start_color,current_color,sizeof(current_color));
 
+			/*num_Cycles_temp is decremented only if number of cycles from config is greater than 0*/
 			if(compare == 0 && (xconfig_hex->cycles != 0) ){
-				//num_Cycles_temp is decremented only if number of cycles from config is greater than 0
-				num_cycles_temp -= 1 ;
+				num_cycles_temp -= 1;
 				xstatus_hex.cycles_left = num_cycles_temp;
-
 				break;
 			}
+
 			if(xcommand_ascii->command == 'Q'){
 				pattern_log_off();
 
 				xTaskNotifyGive(config_task_handle);
 				break;
 			}
+
 		}
 
-
+		/*Send color status*/
+		memcpy(xstatus_hex.current_color,current_color,sizeof(current_color));
 		xstatus_ascii =hex_to_ascii_converter(&xstatus_hex);
 		send_status_to_task(&xstatus_ascii);
+
+		update_current_color_down(xconfig_hex,current_color);
+
 		if(xcommand_ascii->command == 'Q'){
 			pattern_log_off();
-
+			xTaskNotifyGive(config_task_handle);
 			break;
 		}
-
 	}
+
+
 
 	while(xcommand_ascii->command != 'Q'){
 		receive_command_from_task(xcommand_ascii);
@@ -615,16 +624,16 @@ void up_down_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 {
 	status_ascii_t xstatus_ascii;
 	static status_hex_t xstatus_hex;
-
 	int8_t current_color[3]={0,0,0};
 	uint8_t compare = DEFAULT_VALUE;
 	uint8_t num_cycles_temp = DEFAULT_VALUE;
 	bool direction= true;
-
 	xstatus_hex.cycles_left = MODE_INDICATOR;
 
+
+	// only change the num_cycles_temp for automatic fixed.
 	if(xconfig_hex->cycles){
-		num_cycles_temp = 2*xconfig_hex->cycles;// only change the num_cycles_temp for automatic fixed.
+		num_cycles_temp = 2*xconfig_hex->cycles;
 		xstatus_hex.cycles_left = xconfig_hex->cycles;
 	}
 
@@ -633,23 +642,13 @@ void up_down_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 
 	while(num_cycles_temp !=0){
 
-		if(xcommand_ascii->command == 'Q'){
-			break;
-		}
-
-		if(direction){
-			update_current_color_up(xconfig_hex,current_color);
-		}
-		else if (!direction){
-			update_current_color_down(xconfig_hex,current_color);
-		}
-
 		while(!change_rate_delay(xconfig_hex,xcommand_ascii)){
 
 			receive_command_from_task(xcommand_ascii);
-			pattern_generator(current_color,xconfig_hex);
+
 			ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
-			memcpy(xstatus_hex.current_color,current_color,sizeof(current_color));
+			pattern_generator(current_color,xconfig_hex);
+
 
 			if(direction){
 				compare = memcmp(xconfig_hex->end_color,current_color,sizeof(current_color));
@@ -658,8 +657,8 @@ void up_down_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 				compare = memcmp(xconfig_hex->start_color,current_color,sizeof(current_color));
 			}
 
-
-			if(compare == 0  ){ //num_Cycles_temp is decremented only if number of cycles from config is greater than 0
+			//num_Cycles_temp is decremented only if number of cycles from config is greater than 0
+			if(compare == 0  ){
 				direction = !direction;
 				if(xconfig_hex->cycles != 0){
 					num_cycles_temp -=1;
@@ -672,6 +671,7 @@ void up_down_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 				}
 				break;
 			}
+
 			if(xcommand_ascii->command == 'Q'){
 				pattern_log_off();
 
@@ -680,12 +680,22 @@ void up_down_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 			}
 		}
 
-
+		/*send color status*/
+		memcpy(xstatus_hex.current_color,current_color,sizeof(current_color));
 		xstatus_ascii =hex_to_ascii_converter(&xstatus_hex);
 		send_status_to_task(&xstatus_ascii);
+
+		if(direction){
+			update_current_color_up(xconfig_hex,current_color);
+		}
+		else if (!direction){
+			update_current_color_down(xconfig_hex,current_color);
+		}
+
+
 		if(xcommand_ascii->command == 'Q'){
 			pattern_log_off();
-			stop_pit_timer(PIT, kPIT_Chnl_0);
+			xTaskNotifyGive(config_task_handle);
 			break;
 		}
 	}
@@ -727,16 +737,16 @@ void down_up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 {
 	status_ascii_t xstatus_ascii;
 	static status_hex_t xstatus_hex;
-
 	int8_t current_color[3]={0,0,0};
 	uint8_t compare = DEFAULT_VALUE;
 	uint8_t num_cycles_temp = DEFAULT_VALUE;
 	bool direction= false;
+	xstatus_hex.cycles_left = MODE_INDICATOR;
 
-	xstatus_hex.cycles_left = MODE_INDICATOR;//incase of continuous cycles
 
+	// only change the num_cycles_temp for automatic fixed.
 	if(xconfig_hex->cycles){
-		num_cycles_temp = 2*xconfig_hex->cycles; // only change the num_cycles_temp for automatic fixed.
+		num_cycles_temp = 2*xconfig_hex->cycles;
 		xstatus_hex.cycles_left = xconfig_hex->cycles;
 	}
 
@@ -745,23 +755,13 @@ void down_up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 
 	while(num_cycles_temp !=0){
 
-		if(xcommand_ascii->command == 'Q'){
-			break;
-		}
-		if(direction){
-			update_current_color_up(xconfig_hex,current_color);
-		}
-		else if (!direction){
-			update_current_color_down(xconfig_hex,current_color);
-		}
-
 		while(!change_rate_delay(xconfig_hex,xcommand_ascii)){
 
 			receive_command_from_task(xcommand_ascii);
-			pattern_generator(current_color,xconfig_hex);
-			ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
 
-			memcpy(xstatus_hex.current_color,current_color,sizeof(current_color));
+			ulTaskNotifyTake( pdTRUE, portMAX_DELAY );
+			pattern_generator(current_color,xconfig_hex);
+
 
 			if(direction){
 				compare = memcmp(xconfig_hex->end_color,current_color,sizeof(current_color));
@@ -770,11 +770,13 @@ void down_up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 				compare = memcmp(xconfig_hex->start_color,current_color,sizeof(current_color));
 			}
 
-
-			if(compare == 0  ){ //num_Cycles_temp is decremented only if number of cycles from config is greater than 0
+			//num_Cycles_temp is decremented only if number of cycles from config is greater than 0
+			if(compare == 0  ){
 				direction = !direction;
 				if(xconfig_hex->cycles != 0){
 					num_cycles_temp -=1;
+
+
 				}
 				if(!(num_cycles_temp %2)){
 
@@ -782,6 +784,7 @@ void down_up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 				}
 				break;
 			}
+
 			if(xcommand_ascii->command == 'Q'){
 				pattern_log_off();
 
@@ -790,11 +793,22 @@ void down_up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 			}
 		}
 
+		/*send color status*/
+		memcpy(xstatus_hex.current_color,current_color,sizeof(current_color));
 		xstatus_ascii =hex_to_ascii_converter(&xstatus_hex);
 		send_status_to_task(&xstatus_ascii);
+
+		if(direction){
+			update_current_color_up(xconfig_hex,current_color);
+		}
+		else if (!direction){
+			update_current_color_down(xconfig_hex,current_color);
+		}
+
+
 		if(xcommand_ascii->command == 'Q'){
 			pattern_log_off();
-
+			xTaskNotifyGive(config_task_handle);
 			break;
 		}
 	}
@@ -805,6 +819,7 @@ void down_up_direction(config_hex_t* xconfig_hex, command_ascii_t* xcommand_asci
 	}
 
 	pattern_log_off();
+
 	xTaskNotifyGive(config_task_handle);
 
 }
