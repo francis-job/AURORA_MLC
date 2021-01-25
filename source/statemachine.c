@@ -217,7 +217,7 @@ int systemconfig_func()
 			*(buff+i)=data;
 			i++;
 		}
-		if(validate_buffer(REFRESH_RATE_ID,buff)==kStatus_Fail)
+		if(validate_buffer(REFRESH_RATE_ID,buff)==FAIL)
 		{
 			print_message(ERROR_MSG);
 			continue;
@@ -278,7 +278,7 @@ int color_config_func()
 			return state;
 		}else if(data=='B'){
 			return PATTERNCONFIG_SCREEN;
-		}else if(validate_byte(START_COLOR_ID,i,data)==kStatus_Fail){
+		}else if(validate_byte(START_COLOR_ID,i,data)==FAIL){
 			print_message(ERROR_MSG);
 			i=0;
 			print_message(get);
@@ -299,7 +299,7 @@ int color_config_func()
 			return state;
 		}else if(data=='B'){
 			return PATTERNCONFIG_SCREEN;
-		}else if(validate_byte(END_COLOR_ID,i,data)==kStatus_Fail){
+		}else if(validate_byte(END_COLOR_ID,i,data)==FAIL){
 			print_message(ERROR_MSG);
 			i=0;
 			print_message(get2);
@@ -308,7 +308,7 @@ int color_config_func()
 			i++;
 		}
 
-		if(i==6&&compare(buff,buff1)==kStatus_Fail){
+		if(i==6&&compare(buff,buff1)==FAIL){
 			print_message(ERROR_MSG);
 			print_message("End color should be greater\n\rEnter the end color again ->\t\t");
 			i=0;
@@ -325,7 +325,7 @@ int color_config_func()
 			return state;
 		}else if(data=='B'){
 			return PATTERNCONFIG_SCREEN;
-		}else if(validate_byte(STEP_SIZE_ID,i,data)==kStatus_Fail){
+		}else if(validate_byte(STEP_SIZE_ID,i,data)==FAIL){
 			print_message(ERROR_MSG);
 			i=0;
 			print_message(get3);
@@ -387,7 +387,7 @@ int mode_config()
 		}else if (data == 'B') {
 			return PATTERNCONFIG_SCREEN;
 		} else {
-			if(validate_byte(MODE_ID,i,data)==kStatus_Fail) {
+			if(validate_byte(MODE_ID,i,data)==FAIL) {
 				print_message(ERROR_MSG);
 				i=0;
 				print_message(get1);
@@ -419,7 +419,7 @@ int mode_config()
 				*(buff3+i)=data;
 				i++;
 			}
-			if(validate_buffer(CHANGE_RATE_ID,buff3)==kStatus_Fail){
+			if(validate_buffer(CHANGE_RATE_ID,buff3)==FAIL){
 				print_message(ERROR_MSG);
 				continue;
 			}
@@ -445,7 +445,7 @@ int mode_config()
 				*(buff2+i)=data;
 				i++;
 			}
-			if(validate_buffer(CYCLES_ID,buff2)==kStatus_Fail)
+			if(validate_buffer(CYCLES_ID,buff2)==FAIL)
 			{
 				print_message(ERROR_MSG);
 				continue;
@@ -501,7 +501,7 @@ int direction_config()
 		} else if (data == 'B') {
 			return PATTERNCONFIG_SCREEN;
 		} else {
-			if(validate_byte(DIRECTION_ID,i,data)==kStatus_Fail) {
+			if(validate_byte(DIRECTION_ID,i,data)==FAIL) {
 				print_message(ERROR_MSG);
 				i=0;
 				print_message(get1);
@@ -712,7 +712,7 @@ int execution_func()
 		if (is_master == 1) {
 			data = get_keyinput_nonblocking();
 			data = toupper(data);
-			if (validate_executionkey(data) == kStatus_Fail) {
+			if (validate_executionkey(data) == FAIL) {
 				continue;
 			} else {
 				update_cmd_struct(data);
