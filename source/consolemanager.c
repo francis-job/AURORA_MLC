@@ -238,9 +238,9 @@ int create_uartqueue()
 {
 	uart_queue=xQueueCreate(1,sizeof(uint8_t));
 	if(uart_queue!=NULL){
-		return kStatus_Success;
+		return SUCCESS;
 	}
-	return kStatus_Fail;
+	return FAIL;
 }
 /**
  * @brief Displays a message
@@ -267,7 +267,7 @@ void print_message(char data[])
  * This function displays the message/data
 
  *
- * @param 	const uint8_t *data	: message to be displayed
+ * @param 	data	: message to be displayed
  * 			size of the data displayed
  * @return 	none
  *
@@ -308,27 +308,27 @@ int validate_buffer(param_t buffer_id, uint8_t *data)
 		case REFRESH_RATE_ID:
 			int_value=strtol((const char*)data,&p,10);
 			if(int_value>=MIN_REFRESH_RATE && int_value<=MAX_REFRESH_RATE && *p==0)
-				return kStatus_Success;
+				return SUCCESS;
 			break;
 
 		case CYCLES_ID:
 			int_value=strtol((const char*)data,&p,10);
 			if(int_value>=MIN_CYCLE && int_value<=MAX_CYCLE && *p==0)
-				return kStatus_Success;
+				return SUCCESS;
 			break;
 
 
 		case CHANGE_RATE_ID:
 			int_value=strtol((const char*)data,&p,10);
-			if(int_value>=MIN_CHANGE_RATE && int_value<=MAX_CHANGE_RATE && *p == 0)
-				return kStatus_Success;
+			if(int_value>=MIN_CHANGE_RATE && int_value<=MAX_CHANGE_RATE && *p==0)
+				return SUCCESS;
 			break;
 
 
 		default:
-			return kStatus_Fail;
+			return FAIL;
 	}
-	return kStatus_Fail;
+	return FAIL;
 
 }
 /**
@@ -374,7 +374,7 @@ int validate_byte(param_t byte_id, uint8_t index , uint8_t data)
 			break;
 
 		default:
-			return kStatus_Fail;
+			return FAIL;
 
 	}
 	return status;
@@ -402,32 +402,32 @@ static int color(uint8_t index, uint8_t byte)
 	{
 		case 0:
 			if(byte<'0'||byte>'7')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 1:
 			if(byte!=',')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 2:
 			if(byte<'0'||byte>'7')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 3:
 			if(byte!=',')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 4:
 			if(byte<'0'||byte>'7')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 5:
 			if(byte!='\r')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		default:
-			return kStatus_Fail;
+			return FAIL;
 	}
-	return kStatus_Success;
+	return SUCCESS;
 }
 /**
  * @brief validate bytes for step size.
@@ -451,16 +451,16 @@ static int step_size(uint8_t index, uint8_t byte)
 	{
 		case 0:
 			if(byte<'1'||byte>'7')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 1:
 			if(byte!='\r')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		default:
-			return kStatus_Fail;
+			return FAIL;
 	}
-	return kStatus_Success;
+	return SUCCESS;
 
 }
 /**
@@ -485,16 +485,16 @@ static int mode(uint8_t index, uint8_t byte)
 	{
 		case 0:
 			if(byte!='1'&& byte!='2')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 1:
 			if(byte!='\r')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		default:
-			return kStatus_Fail;
+			return FAIL;
 	}
-	return kStatus_Success;
+	return SUCCESS;
 
 }
 /**
@@ -519,16 +519,16 @@ static int direction(uint8_t index, uint8_t byte)
 	{
 		case 0:
 			if(byte<'1'||byte>'3')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		case 1:
 			if(byte!='\r')
-				return kStatus_Fail;
+				return FAIL;
 			break;
 		default:
-			return kStatus_Fail;
+			return FAIL;
 	}
-	return kStatus_Success;
+	return SUCCESS;
 }
 /**
  * @brief compares the start color and end color
@@ -552,10 +552,10 @@ int compare(uint8_t *start_color, uint8_t *end_color)
    for(int i=0;i<5;i++)
    {
 		if(*(start_color+i)>*(end_color+i))
-			return kStatus_Fail;
+			return FAIL;
 
    }
-	return kStatus_Success;
+	return SUCCESS;
 }
 /**
  * @brief validate the byte received
@@ -578,14 +578,15 @@ int validate_executionkey(uint8_t byte)
 	uint8_t mode_value = curr_config.mode;
 
 	if(byte=='Q'){
-		return kStatus_Success;
+		return SUCCESS;
 	}
 	else if(mode_value == '2' && byte == ' '){
-		return kStatus_Success;
+		return SUCCESS;
 	}
 
 	else if(mode_value =='1'&&( byte == '>' || byte == '<')){
-		return kStatus_Success;
+		return SUCCESS;
 	}
-	return kStatus_Fail;
+	return FAIL;
 }
+
